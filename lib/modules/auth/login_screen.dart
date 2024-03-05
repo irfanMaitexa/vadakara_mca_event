@@ -1,6 +1,7 @@
 // ignore_for_file: prefer_const_constructors
 
 import 'package:event/modules/auth/user_registrattion_screen.dart';
+import 'package:event/modules/user/user_root_screen.dart';
 import 'package:event/utils/constants.dart';
 import 'package:event/utils/validator.dart';
 import 'package:event/widgets/custom_button.dart';
@@ -188,13 +189,21 @@ class _LoginScreenState extends State<LoginScreen> {
   }
 
   void _loginHandler() {
-    setState(() {
-      emailError = validateEmail(_emailController.text);
-      passwordError = validatePassword(_passwordController.text);
-      if (emailError == null && passwordError == null) {
-      } else {
-        setState(() {});
-      }
-    });
+    // setState(() {
+    //   emailError = validateEmail(_emailController.text);
+    //   passwordError = validatePassword(_passwordController.text);
+    //   if (emailError == null && passwordError == null) {
+    //   } else {
+    //     setState(() {});
+    //   }
+    // });
+
+
+    Navigator.pushAndRemoveUntil(
+      context, 
+      MaterialPageRoute(builder: (context) => UserRootScreen(),), (route) => false);
+
+
+    
   }
 }

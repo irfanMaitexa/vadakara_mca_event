@@ -8,8 +8,9 @@ class CustomTextField extends StatelessWidget {
   final Widget ? suffixIcon;
   final bool ? obscureText;
   final Color ? borderColor;
+  String? Function(String?)? validator;
 
-  const CustomTextField({
+   CustomTextField({
     Key? key,
     required this.hintText,
     required this.controller,
@@ -17,19 +18,21 @@ class CustomTextField extends StatelessWidget {
     this.errorText,
     this.suffixIcon,
     this.obscureText,
-    this.borderColor
+    this.borderColor,
+    this.validator,
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     var outlineInputBorder = OutlineInputBorder(
-      borderRadius: BorderRadius.circular(10.0),
+      borderRadius: BorderRadius.circular(25.0),
       borderSide:  BorderSide(
         color: borderColor?? Colors.white,
       ),
     );
-    return TextField(
+    return TextFormField(
       controller: controller,
+      validator: validator,
       keyboardType: input,
       obscureText: obscureText??false,
       decoration: InputDecoration(
@@ -43,7 +46,7 @@ class CustomTextField extends StatelessWidget {
 
 
           errorBorder: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(10.0),
+              borderRadius: BorderRadius.circular(25.0),
               borderSide: const BorderSide(color: Colors.red))),
     );
   }

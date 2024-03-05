@@ -1,0 +1,95 @@
+import 'package:carousel_slider/carousel_slider.dart';
+import 'package:event/modules/user/bookings/user_booking.dart';
+import 'package:event/modules/user/home/widgets/events_packages.dart';
+import 'package:event/widgets/custom_button.dart';
+import 'package:flutter/material.dart';
+
+class UserHomeScreen extends StatefulWidget {
+  const UserHomeScreen({super.key});
+
+  @override
+  State<UserHomeScreen> createState() => _UserHomeScreenState();
+}
+
+class _UserHomeScreenState extends State<UserHomeScreen> {
+  @override
+  Widget build(BuildContext context) {
+    return SafeArea(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 15),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const SizedBox(
+              height: 20,
+            ),
+            Container(
+              clipBehavior: Clip.hardEdge,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10), color: Colors.amber),
+              child: CarouselSlider(
+                options: CarouselOptions(autoPlay: true, viewportFraction: 1),
+                items: [
+                  'https://img.freepik.com/free-photo/mechanic-repairing-bicycle_23-2148138617.jpg?w=1380&t=st=1708497923~exp=1708498523~hmac=db0aa97cb4ebd6cb6b1a4e4f5a8da5d25d20e4a8be9b4bb5abeb10a7cbbcc7d0',
+                  'https://img.freepik.com/free-photo/mechanic-repairing-bicycle_23-2148138617.jpg?w=1380&t=st=1708497923~exp=1708498523~hmac=db0aa97cb4ebd6cb6b1a4e4f5a8da5d25d20e4a8be9b4bb5abeb10a7cbbcc7d0'
+                ].map((i) {
+                  return Builder(
+                    builder: (BuildContext context) {
+                      return GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              image: DecorationImage(
+                                image: NetworkImage(i),
+                                fit: BoxFit.cover,
+                              ),
+                            ),
+                            child: const Padding(
+                              padding: EdgeInsets.only(left: 30),
+                            )),
+                      );
+                    },
+                  );
+                }).toList(),
+              ),
+            ),
+            const  SizedBox(height: 20,),
+            SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: CustomButton(
+                text: 'Book your event',
+                onPressed: () {
+                  Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        const UserBookingScreen(),
+                                  ),
+                                );
+                },
+              ),
+            ),
+
+            const SizedBox(
+              height: 20,
+            ),
+
+            const Text(
+              'Event pakages',
+              style: TextStyle(fontSize: 16),
+              ),
+              const SizedBox(height: 10,),
+
+              Expanded(
+                child: EventPackagesWidget()
+                
+                
+                )
+          ],
+        ),
+      ),
+    );
+  }
+}
