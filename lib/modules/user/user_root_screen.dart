@@ -1,4 +1,6 @@
+import 'package:event/modules/user/bookings/booking_list.dart';
 import 'package:event/modules/user/home/home_screen.dart';
+import 'package:event/modules/user/profile/user_profile_screen.dart';
 import 'package:event/utils/constants.dart';
 import 'package:flutter/material.dart';
 
@@ -19,12 +21,12 @@ class _UserRootScreenState extends State<UserRootScreen> {
     });
   }
 
-  final _pagesList = const [
+  final _pagesList =  [
 
     UserHomeScreen(),
-    Scaffold(),
-    Scaffold(),
-    Scaffold(),
+    BookingListScreen(),
+    UserProfileScreen(),
+
   
     
   ];
@@ -55,10 +57,7 @@ class _UserRootScreenState extends State<UserRootScreen> {
               icon: Icon(Icons.home),
               label: 'Home',
             ),
-            BottomNavigationBarItem(
-              icon: Icon(Icons.search),
-              label: 'Search',
-            ),
+            
             BottomNavigationBarItem(
               icon: Icon(Icons.bookmark),
               label: 'location',

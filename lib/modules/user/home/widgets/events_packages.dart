@@ -24,7 +24,16 @@ class EventPackagesWidget extends StatelessWidget {
           children: List.generate(
             turfList.length,
             (index) => GestureDetector(
-              onTap: () {},
+              onTap: () {
+                Navigator.push(
+                  context,
+                  MaterialPageRoute(
+                    builder: (context) => UserPackageBookingScreeen(
+                      image: turfList[index],
+                    ),
+                  ),
+                );
+              },
               child: Container(
                 width: 150,
                 padding: const EdgeInsets.all(10),
@@ -73,7 +82,9 @@ class EventPackagesWidget extends StatelessWidget {
                                   context,
                                   MaterialPageRoute(
                                     builder: (context) =>
-                                        const UserPackageBookingScreeen(),
+                                        UserPackageBookingScreeen(
+                                      image: turfList[index],
+                                    ),
                                   ),
                                 );
                               },
