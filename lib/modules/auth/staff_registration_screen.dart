@@ -1,3 +1,6 @@
+import 'package:event/modules/auth/login_screen.dart';
+import 'package:event/modules/auth/services/auth_api_service.dart';
+import 'package:event/utils/constants.dart';
 import 'package:event/utils/validator.dart';
 import 'package:event/widgets/custom_button.dart';
 import 'package:event/widgets/custom_text_field.dart';
@@ -16,6 +19,8 @@ class _StaffRegistrationScreenState extends State<StaffRegistrationScreen> {
   String? passwordError;
 
   bool _obscureText = true;
+
+  bool _loading = false;
 
   final _nameControllers = TextEditingController();
   final _phoneControllers = TextEditingController();
@@ -56,25 +61,21 @@ class _StaffRegistrationScreenState extends State<StaffRegistrationScreen> {
                 height: 60,
               ),
               CustomTextField(
-                hintText: 'Enter name',
-                controller: _nameControllers,
-                borderColor: Colors.grey.shade300
-              ),
+                  hintText: 'Enter name',
+                  controller: _nameControllers,
+                  borderColor: Colors.grey.shade300),
               const SizedBox(height: 30),
               CustomTextField(
-                hintText: 'Enter phone',
-                controller: _phoneControllers,
-                input: TextInputType.number,
-                borderColor: Colors.grey.shade300
-              ),
+                  hintText: 'Enter phone',
+                  controller: _phoneControllers,
+                  input: TextInputType.number,
+                  borderColor: Colors.grey.shade300),
               const SizedBox(height: 30),
               CustomTextField(
-                hintText: 'Enter email',
-                controller: _emailController,
-                errorText: emailError,
-                input: TextInputType.number,
-                borderColor: Colors.grey.shade300
-              ),
+                  hintText: 'Ente email',
+                  controller: _emailController,
+                  errorText: emailError,
+                  borderColor: Colors.grey.shade300),
               const SizedBox(height: 30),
               CustomTextField(
                 hintText: 'Enter password',
@@ -96,20 +97,25 @@ class _StaffRegistrationScreenState extends State<StaffRegistrationScreen> {
               ),
               const SizedBox(height: 30),
               CustomTextField(
-                hintText: 'Confirm password',
-                controller: _confirmPasswordController,
-                borderColor: Colors.grey.shade300
-              ),
+                  hintText: 'Confirm password',
+                  controller: _confirmPasswordController,
+                  borderColor: Colors.grey.shade300),
               const SizedBox(height: 30),
-              SizedBox(
-                width: MediaQuery.of(context).size.width,
-                child: CustomButton(
-                  text: 'SIGN UP',
-                  onPressed: () {
-                    _signUpHandler(context);
-                  },
-                ),
-              )
+              _loading
+                  ? Center(
+                      child: CircularProgressIndicator(
+                        color: KButtonColor,
+                      ),
+                    )
+                  : SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      child: CustomButton(
+                        text: 'SIGN UP',
+                        onPressed: () {
+                          _signUpHandler(context);
+                        },
+                      ),
+                    )
             ],
           ),
         ),
@@ -117,25 +123,63 @@ class _StaffRegistrationScreenState extends State<StaffRegistrationScreen> {
     );
   }
 
-  _signUpHandler(BuildContext context) {
+  _signUpHandler(BuildContext context) async {
+
+    
     setState(() {
       emailError = validateEmail(_emailController.text);
       passwordError = validatePassword(_passwordController.text);
-      if (emailError == null &&
-          passwordError == null &&
-          _nameControllers.text.isNotEmpty &&
-          _phoneControllers.text.isNotEmpty &&
-          _passwordController.text.isNotEmpty) {
-        if (_passwordController.text == _confirmPasswordController.text) {
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Password not match')));
+    });
+
+    if (emailError == null &&
+        passwordError == null &&
+        _nameControllers.text.isNotEmpty &&
+        _phoneControllers.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
+      if (_passwordController.text == _confirmPasswordController.text) {
+        try {
+          setState(() {
+            _loading = true;
+          });
+
+          var data = await AuthApiService().staffRedistartion(
+            name: _nameControllers.text,
+            phone: _phoneControllers.text,
+              email: _emailController.text,
+               password: _passwordController.text
+              );
+
+
+             if(context.mounted){
+               Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen(),), (route) => false);
+             }
+
+
+
+          setState(() {
+            _loading = false;
+          });
+        } catch (e) {
+
+         if(context.mounted){
+
+           ScaffoldMessenger.of(context)
+            .showSnackBar( SnackBar(content: Text(e.toString())));
+          
+         }
+
+         setState(() {
+            _loading = false;
+          });
         }
       } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('All fields are required')));
-        setState(() {});
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Password not match')));
       }
-    });
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('All fields are required')));
+     
+    }
   }
 }

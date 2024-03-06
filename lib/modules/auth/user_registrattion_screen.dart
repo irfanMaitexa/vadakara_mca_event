@@ -1,3 +1,6 @@
+import 'package:event/modules/auth/login_screen.dart';
+import 'package:event/modules/auth/services/auth_api_service.dart';
+import 'package:event/utils/constants.dart';
 import 'package:event/utils/validator.dart';
 import 'package:event/widgets/custom_button.dart';
 import 'package:event/widgets/custom_text_field.dart';
@@ -16,6 +19,8 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
   String? passwordError;
 
   bool _obscureText = true;
+
+  bool _loading = false;
 
   final _nameControllers = TextEditingController();
   final _phoneControllers = TextEditingController();
@@ -72,7 +77,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                 hintText: 'Enter email',
                 controller: _emailController,
                 errorText: emailError,
-                input: TextInputType.number,
+                input: TextInputType.text,
                 borderColor: Colors.grey.shade300
               ),
               const SizedBox(height: 30),
@@ -101,7 +106,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
                 borderColor: Colors.grey.shade300
               ),
               const SizedBox(height: 30),
-              SizedBox(
+             _loading ?  Center(child: CircularProgressIndicator(color: KButtonColor,),)  : SizedBox(
                 width: MediaQuery.of(context).size.width,
                 child: CustomButton(
                   text: 'SIGN UP',
@@ -117,25 +122,66 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
     );
   }
 
-  _signUpHandler(BuildContext context) {
+  
+
+
+   _signUpHandler(BuildContext context) async {
     setState(() {
       emailError = validateEmail(_emailController.text);
       passwordError = validatePassword(_passwordController.text);
-      if (emailError == null &&
-          passwordError == null &&
-          _nameControllers.text.isNotEmpty &&
-          _phoneControllers.text.isNotEmpty &&
-          _passwordController.text.isNotEmpty) {
-        if (_passwordController.text == _confirmPasswordController.text) {
-        } else {
-          ScaffoldMessenger.of(context).showSnackBar(
-              const SnackBar(content: Text('Password not match')));
-        }
-      } else {
-        ScaffoldMessenger.of(context).showSnackBar(
-            const SnackBar(content: Text('All fields are required')));
-        setState(() {});
-      }
     });
+    if (emailError == null &&
+        passwordError == null &&
+        _nameControllers.text.isNotEmpty &&
+        _phoneControllers.text.isNotEmpty &&
+        _passwordController.text.isNotEmpty) {
+      if (_passwordController.text == _confirmPasswordController.text) {
+        setState(() {
+          _loading = true;
+        });
+
+       try{
+
+         await AuthApiService().userRedistartion(
+            name: _nameControllers.text,
+            phone: _phoneControllers.text,
+            email: _emailController.text,
+            password: _confirmPasswordController.text);
+
+          if(context.mounted){
+               Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen(),), (route) => false);
+             }
+
+        setState(() {
+          _loading = false;
+        });
+       }catch(e){
+
+         if(context.mounted){
+
+          ScaffoldMessenger.of(context)
+            .showSnackBar( SnackBar(content: Text(e.toString())));
+      
+         }
+
+        setState(() {
+          _loading = false;
+        });
+
+
+       }
+
+        
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(const SnackBar(content: Text('Password not match')));
+      }
+    } else {
+      ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('All fields are required')));
+      setState(() {});
+    }
   }
+
+
 }

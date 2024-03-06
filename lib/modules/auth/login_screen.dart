@@ -1,6 +1,10 @@
 // ignore_for_file: prefer_const_constructors
 
+import 'package:event/Db/db_service.dart';
+import 'package:event/modules/auth/services/auth_api_service.dart';
+import 'package:event/modules/auth/staff_registration_screen.dart';
 import 'package:event/modules/auth/user_registrattion_screen.dart';
+import 'package:event/modules/staff/staff_root_screen.dart';
 import 'package:event/modules/user/user_root_screen.dart';
 import 'package:event/utils/constants.dart';
 import 'package:event/utils/validator.dart';
@@ -26,6 +30,8 @@ class _LoginScreenState extends State<LoginScreen> {
 
   String? emailError;
   String? passwordError;
+
+  bool _loading = false;
 
   @override
   void dispose() {
@@ -90,17 +96,23 @@ class _LoginScreenState extends State<LoginScreen> {
             const SizedBox(
               height: 10,
             ),
-            SizedBox(
-              width: MediaQuery.of(context).size.width / 1.2,
-              height: 50,
-              child: CustomButton(
-                text: 'SIGN IN',
-                color: KButtonColor,
-                onPressed: () {
-                  _loginHandler();
-                },
-              ),
-            ),
+            _loading
+                ? Center(
+                    child: CircularProgressIndicator(
+                      color: KButtonColor,
+                    ),
+                  )
+                : SizedBox(
+                    width: MediaQuery.of(context).size.width / 1.2,
+                    height: 50,
+                    child: CustomButton(
+                      text: 'SIGN IN',
+                      color: KButtonColor,
+                      onPressed: () {
+                        _loginHandler();
+                      },
+                    ),
+                  ),
             SizedBox(
               height: 30,
             ),
@@ -139,7 +151,7 @@ class _LoginScreenState extends State<LoginScreen> {
                                 child: CustomButton(
                                   text: 'USER',
                                   color: KButtonColor,
-                                  onPressed: () {
+                                  onPressed: ()  async{
                                     Navigator.push(
                                       context,
                                       MaterialPageRoute(
@@ -147,6 +159,8 @@ class _LoginScreenState extends State<LoginScreen> {
                                             UserRegistrationScreen(),
                                       ),
                                     );
+
+                                    
                                   },
                                 ),
                               ),
@@ -160,13 +174,15 @@ class _LoginScreenState extends State<LoginScreen> {
                                   text: 'STAFF',
                                   color: KButtonColor,
                                   onPressed: () {
-                                     Navigator.push(
+                                    Navigator.push(
                                       context,
                                       MaterialPageRoute(
                                         builder: (context) =>
-                                            UserRegistrationScreen(),
+                                            StaffRegistrationScreen(),
                                       ),
                                     );
+
+                                    
                                   },
                                 ),
                               ),
@@ -188,22 +204,69 @@ class _LoginScreenState extends State<LoginScreen> {
     );
   }
 
-  void _loginHandler() {
-    // setState(() {
-    //   emailError = validateEmail(_emailController.text);
-    //   passwordError = validatePassword(_passwordController.text);
-    //   if (emailError == null && passwordError == null) {
-    //   } else {
-    //     setState(() {});
-    //   }
-    // });
+  void _loginHandler() async {
+    setState(() {
+      emailError = validateEmail(_emailController.text);
+      passwordError = validatePassword(_passwordController.text);
+    });
+    if (emailError == null && passwordError == null) {
+      try {
+        setState(() {
+          _loading = true;
+        });
+
+        var data = await AuthApiService().Login(
+          email: _emailController.text,
+          password: _passwordController.text,
+        );
 
 
-    Navigator.pushAndRemoveUntil(
-      context, 
-      MaterialPageRoute(builder: (context) => UserRootScreen(),), (route) => false);
+        await DbService.setAuth(data['data']['role']);
 
 
-    
+        if (data['data']['role'] == 'user') {
+          
+
+          if (context.mounted) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => UserRootScreen(),
+                ),
+                (route) => false);
+                
+          }
+        }
+
+        if (data['data']['role'] == 'staff') {
+          
+
+          if (context.mounted) {
+            Navigator.pushAndRemoveUntil(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => StaffRootScreen(),
+                ),
+                (route) => false);
+                
+          }
+        }
+
+        setState(() {
+          _loading = false;
+        });
+      } catch (e) {
+        if (context.mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(
+              content: Text(e.toString()),
+            ),
+          );
+        }
+        setState(() {
+          _loading = false;
+        });
+      }
+    }
   }
 }

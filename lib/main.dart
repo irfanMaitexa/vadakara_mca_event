@@ -1,7 +1,12 @@
+import 'package:event/Db/db_service.dart';
 import 'package:event/modules/auth/login_screen.dart';
+import 'package:event/modules/staff/staff_root_screen.dart';
+import 'package:event/modules/user/user_root_screen.dart';
 import 'package:flutter/material.dart';
 
-void main() {
+void main() async{
+  WidgetsFlutterBinding.ensureInitialized();
+  await DbService.init();
   runApp(const MyApp());
 }
 
@@ -11,6 +16,8 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+
+   
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
@@ -18,7 +25,28 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor:  Colors.white
       ),
-      home:  LoginScreen(),
+      home: getHomeScreen(),
     );
+  }
+
+
+
+  Widget  getHomeScreen(){
+
+    String ? role = DbService.getAuth();  
+    switch(role){
+      case 'user' : {
+        return UserRootScreen();
+      }
+      case 'staff' : {
+        return StaffRootScreen();
+      }
+      default:
+       {
+        return  LoginScreen();
+       }
+    
+
+    }
   }
 }
