@@ -31,8 +31,8 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
               child: CarouselSlider(
                 options: CarouselOptions(autoPlay: true, viewportFraction: 1),
                 items: [
-                  'https://img.freepik.com/free-photo/mechanic-repairing-bicycle_23-2148138617.jpg?w=1380&t=st=1708497923~exp=1708498523~hmac=db0aa97cb4ebd6cb6b1a4e4f5a8da5d25d20e4a8be9b4bb5abeb10a7cbbcc7d0',
-                  'https://img.freepik.com/free-photo/mechanic-repairing-bicycle_23-2148138617.jpg?w=1380&t=st=1708497923~exp=1708498523~hmac=db0aa97cb4ebd6cb6b1a4e4f5a8da5d25d20e4a8be9b4bb5abeb10a7cbbcc7d0'
+                  'https://images.pexels.com/photos/50675/banquet-wedding-society-deco-50675.jpeg?auto=compress&cs=tinysrgb&dpr=1&w=500',
+                  'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcSynZYAL-D0x7C4E69GzquXOlE_aDv1ICiAVA&usqp=CAU'
                 ].map((i) {
                   return Builder(
                     builder: (BuildContext context) {

@@ -1,11 +1,9 @@
 // ignore_for_file: prefer_const_constructors
 
-import 'package:event/Db/db_service.dart';
-import 'package:event/modules/auth/services/auth_api_service.dart';
 import 'package:event/modules/auth/staff_registration_screen.dart';
 import 'package:event/modules/auth/user_registrattion_screen.dart';
-import 'package:event/modules/staff/staff_root_screen.dart';
 import 'package:event/modules/user/user_root_screen.dart';
+import 'package:event/services/api_service.dart';
 import 'package:event/utils/constants.dart';
 import 'package:event/utils/validator.dart';
 import 'package:event/widgets/custom_button.dart';
@@ -125,69 +123,10 @@ class _LoginScreenState extends State<LoginScreen> {
                 ),
                 TextButton(
                     onPressed: () {
-                      showDialog(
-                        context: context,
-                        builder: (context) => AlertDialog(
-                          title: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text('Sign up'),
-                              IconButton(
-                                  onPressed: () {
-                                    Navigator.pop(context);
-                                  },
-                                  icon: Icon(
-                                    Icons.cancel,
-                                    size: 30,
-                                  ))
-                            ],
-                          ),
-                          content: Column(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width / 1.2,
-                                height: 50,
-                                child: CustomButton(
-                                  text: 'USER',
-                                  color: KButtonColor,
-                                  onPressed: ()  async{
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            UserRegistrationScreen(),
-                                      ),
-                                    );
-
-                                    
-                                  },
-                                ),
-                              ),
-                              SizedBox(
-                                height: 20,
-                              ),
-                              SizedBox(
-                                width: MediaQuery.of(context).size.width / 1.2,
-                                height: 50,
-                                child: CustomButton(
-                                  text: 'STAFF',
-                                  color: KButtonColor,
-                                  onPressed: () {
-                                    Navigator.push(
-                                      context,
-                                      MaterialPageRoute(
-                                        builder: (context) =>
-                                            StaffRegistrationScreen(),
-                                      ),
-                                    );
-
-                                    
-                                  },
-                                ),
-                              ),
-                            ],
-                          ),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => UserRegistrationScreen(),
                         ),
                       );
                     },
@@ -215,46 +154,23 @@ class _LoginScreenState extends State<LoginScreen> {
           _loading = true;
         });
 
-        var data = await AuthApiService().Login(
-          email: _emailController.text,
-          password: _passwordController.text,
+      int role = await ApiService().loginUser(
+          _emailController.text,
+          _passwordController.text
         );
 
 
-        await DbService.setAuth(data['data']['role']);
+        if(role == 2){
 
 
-        if (data['data']['role'] == 'user') {
-          
-
-          if (context.mounted) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => UserRootScreen(),
-                ),
-                (route) => false);
-                
-          }
+          Navigator.push(context, MaterialPageRoute(builder: (context) => UserRootScreen(),));
         }
 
-        if (data['data']['role'] == 'staff') {
-          
-
-          if (context.mounted) {
-            Navigator.pushAndRemoveUntil(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => StaffRootScreen(),
-                ),
-                (route) => false);
-                
-          }
-        }
+       
 
         setState(() {
-          _loading = false;
-        });
+        _loading = false;
+         });
       } catch (e) {
         if (context.mounted) {
           ScaffoldMessenger.of(context).showSnackBar(

@@ -1,8 +1,12 @@
 import 'package:event/modules/user/bookings/user_booking_confirmation.dart';
+import 'package:event/utils/api_end_points.dart';
+import 'package:event/utils/constants.dart';
 import 'package:event/widgets/custom_button.dart';
 import 'package:event/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
+import 'package:http/http.dart' as http;
+import 'dart:convert';
 
 class UserBookingScreen extends StatefulWidget {
   const UserBookingScreen({super.key});
@@ -16,8 +20,11 @@ class _UserBookingScreenState extends State<UserBookingScreen> {
   final _addreessController = TextEditingController();
   final _peoplsCountController = TextEditingController();
   final _budgetController = TextEditingController();
+  final _sqrtController = TextEditingController();
 
   DateTime? newDateTime;
+  String? selectCategory;
+  bool _loading = false;
 
   @override
   Widget build(BuildContext context) {
@@ -55,7 +62,7 @@ class _UserBookingScreenState extends State<UserBookingScreen> {
                       );
                     }).toList(),
                     onChanged: (String? newValue) {
-                      // Handle selection here
+                      selectCategory = newValue;
                     },
                   ),
                 ),
@@ -86,8 +93,6 @@ class _UserBookingScreenState extends State<UserBookingScreen> {
                     )
                   ],
                 ),
-               
-               
                 const SizedBox(
                   height: 20,
                 ),
@@ -130,7 +135,7 @@ class _UserBookingScreenState extends State<UserBookingScreen> {
                 ),
                 CustomTextField(
                   hintText: 'Add your squer feet',
-                  controller: _addreessController,
+                  controller: _sqrtController,
                   borderColor: Colors.grey,
                 ),
                 const SizedBox(
@@ -151,17 +156,23 @@ class _UserBookingScreenState extends State<UserBookingScreen> {
                 const SizedBox(
                   height: 50,
                 ),
-                SizedBox(
+              _loading ? indicator :    SizedBox(
                   width: MediaQuery.of(context).size.width,
                   child: CustomButton(
                     text: 'Submit',
                     onPressed: () {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => const UserBookingConfirmScreen(),
-                        ),
-                      );
+                      if (_addreessController.text.isNotEmpty &&
+                          _budgetController.text.isNotEmpty &&
+                          _peoplsCountController.text.isNotEmpty &&
+                          _sqrtController.text.isNotEmpty &&
+                          selectCategory != null &&
+                          newDateTime != null) {
+                        postBookEvent();
+                      } else {
+                        customSnackBar(
+                            context: context,
+                            messsage: 'All fields are required');
+                      }
                     },
                   ),
                 ),
@@ -174,5 +185,57 @@ class _UserBookingScreenState extends State<UserBookingScreen> {
         ),
       ),
     );
+  }
+
+  Future<void> postBookEvent() async {
+    setState(() {
+      _loading = true;
+    });
+    final url = Uri.parse('$baseUrl/user/bookEvent');
+    final body = jsonEncode({
+      "category": selectCategory,
+      "date": newDateTime,
+      "address": _addreessController.text,
+      "squarefeet": _sqrtController.text,
+      "budget": _budgetController.text
+    });
+
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: body,
+      );
+
+      if (response.statusCode == 200) {
+        if (context.mounted) {
+          Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const UserBookingConfirmScreen(),
+              ));
+
+          customSnackBar(context: context, messsage: 'Success');
+          _loading = false;
+        }
+      } else {
+        setState(() {
+          _loading = false;
+        });
+        if (context.mounted) {
+          customSnackBar(context: context, messsage: 'Faild');
+        }
+      }
+    } catch (e) {
+
+      setState(() {
+        _loading = false;
+      });
+      if (context.mounted) {
+        customSnackBar(context: context, messsage: 'Somthing went wrong');
+      }
+    }
   }
 }

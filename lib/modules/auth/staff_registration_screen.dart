@@ -1,5 +1,4 @@
 import 'package:event/modules/auth/login_screen.dart';
-import 'package:event/modules/auth/services/auth_api_service.dart';
 import 'package:event/utils/constants.dart';
 import 'package:event/utils/validator.dart';
 import 'package:event/widgets/custom_button.dart';
@@ -142,13 +141,7 @@ class _StaffRegistrationScreenState extends State<StaffRegistrationScreen> {
             _loading = true;
           });
 
-          var data = await AuthApiService().staffRedistartion(
-            name: _nameControllers.text,
-            phone: _phoneControllers.text,
-              email: _emailController.text,
-               password: _passwordController.text
-              );
-
+        
 
              if(context.mounted){
                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen(),), (route) => false);

@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 void main() async{
   WidgetsFlutterBinding.ensureInitialized();
   await DbService.init();
+  
   runApp(const MyApp());
 }
 
@@ -25,28 +26,11 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor:  Colors.white
       ),
-      home: const UserRootScreen(),
+      home: LoginScreen(),
     );
   }
 
 
 
-  Widget  getHomeScreen(){
-
-    String ? role = DbService.getAuth();  
-    switch(role){
-      case 'user' : {
-        return UserRootScreen();
-      }
-      case 'staff' : {
-        return StaffRootScreen();
-      }
-      default:
-       {
-        return  LoginScreen();
-       }
-    
-
-    }
-  }
+  
 }

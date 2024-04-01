@@ -1,5 +1,5 @@
 import 'package:event/modules/auth/login_screen.dart';
-import 'package:event/modules/auth/services/auth_api_service.dart';
+import 'package:event/services/api_service.dart';
 import 'package:event/utils/constants.dart';
 import 'package:event/utils/validator.dart';
 import 'package:event/widgets/custom_button.dart';
@@ -142,7 +142,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
 
        try{
 
-         await AuthApiService().userRedistartion(
+         await ApiService().registerUser(
             name: _nameControllers.text,
             phone: _phoneControllers.text,
             email: _emailController.text,
@@ -160,7 +160,7 @@ class _UserRegistrationScreenState extends State<UserRegistrationScreen> {
          if(context.mounted){
 
           ScaffoldMessenger.of(context)
-            .showSnackBar( SnackBar(content: Text(e.toString())));
+            .showSnackBar(SnackBar(content: Text(e.toString())));
       
          }
 

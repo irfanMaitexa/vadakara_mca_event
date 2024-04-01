@@ -22,6 +22,15 @@ class DbService{
     return prefs!.getString('role');
   }
 
+  static setLoginId(String id){
+    prefs!.setString('loginId',  id);
+
+  }
+
+  static getLoginId(){
+    return prefs!.get('loginId');
+  }
+
 
 
 

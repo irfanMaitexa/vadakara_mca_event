@@ -10,6 +10,8 @@ class CustomTextField extends StatelessWidget {
   final Color ? borderColor;
   String? Function(String?)? validator;
   final bool ? isEnabled;
+  final int ? maxLine;
+  final int ? minLine; 
 
    CustomTextField({
     Key? key,
@@ -21,7 +23,9 @@ class CustomTextField extends StatelessWidget {
     this.obscureText,
     this.borderColor,
     this.validator,
-    this.isEnabled
+    this.isEnabled,
+    this.maxLine,
+    this.minLine,
   }) : super(key: key);
 
   @override
@@ -38,6 +42,9 @@ class CustomTextField extends StatelessWidget {
       keyboardType: input,
       obscureText: obscureText??false,
       enabled: isEnabled,
+      maxLines: maxLine ?? 1,
+      minLines:  minLine,
+
       decoration: InputDecoration(
           hintText: hintText,
           enabledBorder: outlineInputBorder,
