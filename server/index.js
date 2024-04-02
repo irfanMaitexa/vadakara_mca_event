@@ -4,6 +4,7 @@ const cors = require("cors");
 
 const { json } = require("body-parser");
 const authRoute = require("./src/routes/authRouter");
+const userRoute = require("./src/routes/userRoutes");
 
 const app = express();
 const port = 3000;
@@ -14,6 +15,7 @@ app.use(cors());
 
 //app routes
 app.use("/auth", authRoute);
+app.use("/user",userRoute);
 
 //connect with mongodb
 mongoose

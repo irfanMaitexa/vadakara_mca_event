@@ -107,31 +107,35 @@ Center(
           const  SizedBox(
             height: 30,
           ),
-          Row(
-            children :  [
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: Row(
+              children :  [
+                
+                
+                Expanded(
+                  child: CustomButton(
+                  text: 'Log out',
+                  color: KButtonColor,
+                  onPressed: () {
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen(),), (route) => false);
+                  },
+                            ),
+                ),
+                SizedBox(width: 10,),
+                Expanded(
+                  child: CustomButton(
+                  text: 'complaint',
+                  color: KButtonColor,
+                  onPressed: () {
+          
+                    Navigator.push(context, MaterialPageRoute(builder:(context) => UserAddComplaintScreen(),));
+                  },
+                            ),
+                ),
               
-              
-              Expanded(
-                child: CustomButton(
-                text: 'Log out',
-                color: KButtonColor,
-                onPressed: () {
-                  Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => LoginScreen(),), (route) => false);
-                },
-                          ),
-              ),
-              Expanded(
-                child: CustomButton(
-                text: 'complaint',
-                color: KButtonColor,
-                onPressed: () {
-
-                  Navigator.push(context, MaterialPageRoute(builder:(context) => UserAddComplaintScreen(),));
-                },
-                          ),
-              ),
-            
-            ]
+              ]
+            ),
           )
         ],
       ),

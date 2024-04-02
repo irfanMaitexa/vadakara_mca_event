@@ -1,6 +1,7 @@
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:event/modules/user/bookings/user_booking.dart';
 import 'package:event/modules/user/home/widgets/events_packages.dart';
+import 'package:event/modules/user/home/widgets/product_widget.dart';
 import 'package:event/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -55,38 +56,63 @@ class _UserHomeScreenState extends State<UserHomeScreen> {
                 }).toList(),
               ),
             ),
-            const  SizedBox(height: 20,),
+            const SizedBox(
+              height: 20,
+            ),
             SizedBox(
               width: MediaQuery.of(context).size.width,
               child: CustomButton(
                 text: 'Book your event',
                 onPressed: () {
                   Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        const UserBookingScreen(),
-                                  ),
-                                );
+                    context,
+                    MaterialPageRoute(
+                      builder: (context) => const UserBookingScreen(),
+                    ),
+                  );
                 },
               ),
             ),
-
             const SizedBox(
               height: 20,
             ),
+            Expanded(
+                child: SingleChildScrollView(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    mainAxisSize: MainAxisSize.min,
+                              children: [
+                  SizedBox(height: 20,),
+                  const Text(
+                    'Event pakages',
+                    style: TextStyle(fontSize: 20,fontWeight: FontWeight.w700),
+                  ),
+                  const SizedBox(
+                    height: 20,
+                  ),
+                  SizedBox(
+                    height: 300,
+                    child: EventPackagesWidget()),
 
-            const Text(
-              'Event pakages',
-              style: TextStyle(fontSize: 16),
-              ),
-              const SizedBox(height: 10,),
 
-              Expanded(
-                child: EventPackagesWidget()
-                
-                
-                )
+
+                    const Text(
+                    'Trending product',
+                    style: TextStyle(fontSize: 20,fontWeight: FontWeight.w600),
+                  ),
+                  const SizedBox(
+                    height: 10,
+                  ),
+                  SizedBox(
+                    height: 300,
+                    child: ProductPackagesWidget()),
+                  
+                            
+                            
+                  
+                              ],
+                            ),
+                ))
           ],
         ),
       ),

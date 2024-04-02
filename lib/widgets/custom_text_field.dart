@@ -6,17 +6,20 @@ class CustomTextField extends StatelessWidget {
   final String? errorText;
   final TextInputType? input;
   final Widget ? suffixIcon;
+  final int ? maxLines;
+  final int ? minLines;
   final bool ? obscureText;
   final Color ? borderColor;
   String? Function(String?)? validator;
+
   final bool ? isEnabled;
-  final int ? maxLine;
-  final int ? minLine; 
 
    CustomTextField({
     Key? key,
     required this.hintText,
     required this.controller,
+    this.maxLines,
+    this.minLines,
     this.input,
     this.errorText,
     this.suffixIcon,
@@ -24,8 +27,6 @@ class CustomTextField extends StatelessWidget {
     this.borderColor,
     this.validator,
     this.isEnabled,
-    this.maxLine,
-    this.minLine,
   }) : super(key: key);
 
   @override
@@ -42,17 +43,16 @@ class CustomTextField extends StatelessWidget {
       keyboardType: input,
       obscureText: obscureText??false,
       enabled: isEnabled,
-      maxLines: maxLine ?? 1,
-      minLines:  minLine,
-
+      maxLines: maxLines??1,
+      minLines:  minLines,
       decoration: InputDecoration(
           hintText: hintText,
+          
           enabledBorder: outlineInputBorder,
           focusedBorder: outlineInputBorder,
           border: outlineInputBorder,
           errorText: errorText,
           suffixIcon: suffixIcon,
-          
           hintStyle: TextStyle(color: Colors.grey.shade400,fontWeight: FontWeight.w400),
 
 

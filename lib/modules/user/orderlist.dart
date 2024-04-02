@@ -2,20 +2,19 @@ import 'dart:convert';
 
 import 'package:event/Db/db_service.dart';
 import 'package:event/services/api_service.dart';
-import 'package:event/utils/api_end_points.dart';
 import 'package:event/widgets/custom_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
 
-class BookingListScreen extends StatefulWidget {
-  const BookingListScreen({Key? key}) : super(key: key);
+class OrderListScreen extends StatefulWidget {
+  const OrderListScreen({Key? key}) : super(key: key);
 
   @override
-  State<BookingListScreen> createState() => _BookingListScreenState();
+  State<OrderListScreen> createState() => _OrderListScreenState();
 }
 
-class _BookingListScreenState extends State<BookingListScreen> {
+class _OrderListScreenState extends State<OrderListScreen> {
   Future<List<dynamic>>? _futureFeedback;
 
   @override
@@ -26,7 +25,9 @@ class _BookingListScreenState extends State<BookingListScreen> {
 
   Future<List<dynamic>> _fetchFeedback() async {
     final loginId = DbService.getLoginId();
-    final url = Uri.parse('${ApiService.baseUrl}/api/user/view-booking/$loginId');
+    final url = Uri.parse('${ApiService.baseUrl}/api/user/view-order/$loginId');
+
+    print(url);
     final response = await http.get(url);
 
 
@@ -81,21 +82,19 @@ class _BookingListScreenState extends State<BookingListScreen> {
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                       ),
-                      child: Image.network(
-                        feedback['event_data']['image']
-                      ),
+                      child: Icon(Icons.bookmark)
                     ),
                     title: Text(
-                       feedback['event_data']['event_type'],
+                       'order$index',
                       style: TextStyle(
                         color: Colors.black,
                         fontSize: 20,
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    subtitle: Text(feedback['date']),
+                    subtitle: Text(feedback['subtotal'].toString()),
                     trailing: CustomButton(
-                      text: feedback['status'],
+                      text: feedback['order_status'],
                       onPressed: () {},
                     ),
                   ),

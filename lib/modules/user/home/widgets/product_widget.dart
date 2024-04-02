@@ -1,19 +1,18 @@
 import 'dart:convert';
 
 import 'package:event/modules/user/bookings/package_booking.dart';
+import 'package:event/modules/user/product_details.dart';
 import 'package:event/services/api_service.dart';
 import 'package:event/widgets/custom_button.dart';
 import 'package:http/http.dart' as http;
 import 'package:flutter/material.dart';
 
-class EventPackagesWidget extends StatelessWidget {
-  EventPackagesWidget({Key? key});
+class ProductPackagesWidget extends StatelessWidget {
+  const ProductPackagesWidget({super.key});
 
-  Future<List<dynamic>> _fetchEventPackages() async {
-    final url = Uri.parse('${ApiService.baseUrl}/api/user/view-events');
+  Future<List<dynamic>> _fetchProductPackages() async {
+    final url = Uri.parse('${ApiService.baseUrl}/api/user/view-products');
     final response = await http.get(url);
-
-   
 
     if (response.statusCode == 201) {
       final List<dynamic> data = jsonDecode(response.body)['data'];
@@ -26,10 +25,10 @@ class EventPackagesWidget extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return FutureBuilder<List<dynamic>>(
-      future: _fetchEventPackages(),
+      future: _fetchProductPackages(),
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return Center(child: CircularProgressIndicator());
+          return const Center(child: CircularProgressIndicator());
         } else if (snapshot.hasError) {
           return Center(child: Text('Error: ${snapshot.error}'));
         } else {
@@ -40,13 +39,11 @@ class EventPackagesWidget extends StatelessWidget {
               children: List.generate(
                 snapshot.data!.length,
                 (index) => GestureDetector(
-                  onTap: () {
-                   
-                  },
+                  onTap: () {},
                   child: Container(
                     width: 150,
                     height: 150,
-                    margin: EdgeInsets.all(10),
+                    margin: const EdgeInsets.all(10),
                     padding: const EdgeInsets.all(10),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(30),
@@ -69,7 +66,7 @@ class EventPackagesWidget extends StatelessWidget {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               Text(
-                                snapshot.data![index]['event_type'],
+                                snapshot.data![index]['name'],
                                 style: TextStyle(
                                   color: Colors.grey.shade400,
                                   fontSize: 15,
@@ -79,7 +76,7 @@ class EventPackagesWidget extends StatelessWidget {
                                 '₹${snapshot.data![index]['price']}',
                                 maxLines: 2,
                                 overflow: TextOverflow.ellipsis,
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Colors.black,
                                   fontSize: 16,
                                 ),
@@ -92,9 +89,14 @@ class EventPackagesWidget extends StatelessWidget {
                                 child: CustomButton(
                                   text: 'view more',
                                   onPressed: () {
-
-                                    Navigator.push(context, MaterialPageRoute(builder: (context) => UserPackageBookingScreeen(details: snapshot.data![index],) ,));
-                                   
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              UserProductDetailsScreeen(
+                                            details: snapshot.data![index],
+                                          ),
+                                        ));
                                   },
                                 ),
                               ),
@@ -115,7 +117,4 @@ class EventPackagesWidget extends StatelessWidget {
       },
     );
   }
-}
-
-class UserPackageBookingScreen {
 }

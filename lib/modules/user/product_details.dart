@@ -1,22 +1,20 @@
 import 'package:event/Db/db_service.dart';
-import 'package:event/modules/user/bookings/user_booking_confirmation.dart';
+import 'package:event/modules/user/cartlist_screen.dart';
 import 'package:event/services/api_service.dart';
 import 'package:event/widgets/custom_button.dart';
-import 'package:event/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_rounded_date_picker/flutter_rounded_date_picker.dart';
 
-class UserPackageBookingScreeen extends StatefulWidget {
-  const UserPackageBookingScreeen({super.key, required this.details});
+class UserProductDetailsScreeen extends StatefulWidget {
+  const UserProductDetailsScreeen({super.key, required this.details});
 
   final Map<String, dynamic> details;
 
   @override
-  State<UserPackageBookingScreeen> createState() =>
-      _UserPackageBookingScreeenState();
+  State<UserProductDetailsScreeen> createState() =>
+      _UserProductDetailsScreeenState();
 }
 
-class _UserPackageBookingScreeenState extends State<UserPackageBookingScreeen> {
+class _UserProductDetailsScreeenState extends State<UserProductDetailsScreeen> {
   DateTime? newDateTime;
 
   bool loading = false;
@@ -25,12 +23,8 @@ class _UserPackageBookingScreeenState extends State<UserPackageBookingScreeen> {
 
   @override
   Widget build(BuildContext context) {
-    print(widget.details);
     return Scaffold(
       backgroundColor: Colors.grey.shade200,
-      appBar: AppBar(
-        title: const Text('Book your package'),
-      ),
       body: Padding(
         padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
         child: Column(
@@ -49,33 +43,6 @@ class _UserPackageBookingScreeenState extends State<UserPackageBookingScreeen> {
             const SizedBox(
               height: 10,
             ),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                newDateTime != null
-                    ? Text(
-                        '${newDateTime!.day.toString()}/${newDateTime!.month.toString()}/${newDateTime!.year.toString()}')
-                    : const Text('Select date'),
-                CustomButton(
-                  text: newDateTime != null ? 'change' : 'select',
-                  onPressed: () async {
-                    newDateTime = await showRoundedDatePicker(
-                      context: context,
-                      initialDate: DateTime.now(),
-                      firstDate: DateTime(DateTime.now().year - 1),
-                      lastDate: DateTime(DateTime.now().year + 1),
-                      borderRadius: 16,
-                    );
-                    if (newDateTime != null) {
-                      setState(() {});
-                    }
-                  },
-                )
-              ],
-            ),
-            const SizedBox(
-              height: 20,
-            ),
             Expanded(
               flex: 2,
               child: SizedBox(
@@ -84,24 +51,25 @@ class _UserPackageBookingScreeenState extends State<UserPackageBookingScreeen> {
                   child: Padding(
                     padding: const EdgeInsets.all(10.0),
                     child: ListView(
-                      
                       children: [
-                        Align(
-                          alignment: Alignment.centerLeft,
-                          child: const Text(
-                            'Loaction',
-                            style: TextStyle(
-                              color: Colors.black,
-                              fontSize: 15,
-                            ),
+                        const Text(
+                          'Name',
+                          style: TextStyle(
+                            color: Colors.black,
+                            fontSize: 15,
                           ),
                         ),
-                        CustomTextField(
-                          hintText: 'Enter Location',
-                          controller: locationController,
-                          borderColor: Colors.grey,
+                        const SizedBox(
+                          height: 10,
                         ),
-                        SizedBox(height: 30,),
+                        Text(
+                          widget.details['name'],
+                          maxLines: 8,
+                          style: TextStyle(color: Colors.grey.shade400),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
                         const Text(
                           'Description',
                           style: TextStyle(
@@ -121,7 +89,7 @@ class _UserPackageBookingScreeenState extends State<UserPackageBookingScreeen> {
                           height: 20,
                         ),
                         const Text(
-                          'Type',
+                          'Color',
                           style: TextStyle(
                             color: Colors.black,
                             fontSize: 15,
@@ -131,7 +99,7 @@ class _UserPackageBookingScreeenState extends State<UserPackageBookingScreeen> {
                           height: 5,
                         ),
                         Text(
-                          widget.details['event_type'],
+                          widget.details['color'],
                           style: TextStyle(
                             color: Colors.grey.shade400,
                             fontSize: 16,
@@ -170,33 +138,56 @@ class _UserPackageBookingScreeenState extends State<UserPackageBookingScreeen> {
                 : SizedBox(
                     width: MediaQuery.of(context).size.width,
                     child: CustomButton(
-                      text: 'Book',
+                      text: 'Add to Cart',
                       onPressed: () async {
                         try {
                           setState(() {
                             loading = true;
                           });
 
-                          if (locationController.text.isNotEmpty &&
-                              newDateTime != null) {
-                            await ApiService().bookEvent(
-                                context,
-                                DbService.getLoginId(),
-                                widget.details['_id'],
-                                '${newDateTime!.day}-${newDateTime!.month}-${newDateTime!.year}',
-                                locationController.text);
+                          await ApiService().addCartItem(DbService.getLoginId(),
+                              widget.details['_id'], widget.details['price'].toString());
 
-                                Navigator.pushReplacement(context, MaterialPageRoute(builder:(context) => UserBookingConfirmScreen(), ));
-                          }else{
-                            ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Date and location Required')),
-      );
-                          }
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Row(
+                            children: [
+                              const Text('item added'),
+                              const Spacer(),
+                              TextButton(
+                                  onPressed: () {
+                                    Navigator.push(
+                                        context,
+                                        MaterialPageRoute(
+                                          builder: (context) =>
+                                              const UserCartListScreen(),
+                                        ));
+                                  },
+                                  child: const Text(
+                                    'Go to cart',
+                                    style: TextStyle(color: Colors.white),
+                                  ))
+                            ],
+                          )));
 
                           setState(() {
                             loading = false;
                           });
-                        } catch (e) {}
+                        } catch (e) {
+
+
+                          print(e);
+
+                          setState(() {
+                            loading = false;
+                          });
+                          ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+                              content: Row(
+                            children: [
+                              const Text('Faild'),
+                          
+                            ],
+                          )));
+                        }
                       },
                     ),
                   )

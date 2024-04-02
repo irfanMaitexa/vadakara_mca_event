@@ -1,5 +1,7 @@
 import 'package:event/modules/user/bookings/booking_list.dart';
+import 'package:event/modules/user/cartlist_screen.dart';
 import 'package:event/modules/user/home/home_screen.dart';
+import 'package:event/modules/user/orderlist.dart';
 import 'package:event/modules/user/profile/user_profile_screen.dart';
 import 'package:event/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -24,7 +26,10 @@ class _UserRootScreenState extends State<UserRootScreen> {
   final _pagesList =  [
 
     UserHomeScreen(),
+    UserCartListScreen(),
     BookingListScreen(),
+    OrderListScreen(),
+
     UserProfileScreen(),
 
   
@@ -55,6 +60,14 @@ class _UserRootScreenState extends State<UserRootScreen> {
           items: const <BottomNavigationBarItem>[
             BottomNavigationBarItem(
               icon: Icon(Icons.home),
+              label: 'Home',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.shopping_cart),
+              label: 'cart',
+            ),
+            BottomNavigationBarItem(
+              icon: Icon(Icons.book),
               label: 'Home',
             ),
             

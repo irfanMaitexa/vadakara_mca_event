@@ -1,4 +1,5 @@
 import 'package:event/modules/user/bookings/user_booking_confirmation.dart';
+import 'package:event/services/api_service.dart';
 import 'package:event/utils/api_end_points.dart';
 import 'package:event/utils/constants.dart';
 import 'package:event/widgets/custom_button.dart';
@@ -191,7 +192,7 @@ class _UserBookingScreenState extends State<UserBookingScreen> {
     setState(() {
       _loading = true;
     });
-    final url = Uri.parse('$baseUrl/user/bookEvent');
+    final url = Uri.parse('${ApiService.baseUrl}/user/bookEvent');
     final body = jsonEncode({
       "category": selectCategory,
       "date": newDateTime,
