@@ -20,6 +20,7 @@ dependencies:
   carousel_slider: ^4.2.1
   http: ^1.1.0
   shared_preferences: ^2.2.2
+  action_slider: ^0.7.0
   flutter_rounded_date_picker: ^3.0.4
 
 dev_dependencies:
@@ -32,5 +33,9 @@ dev_dependencies:
 flutter:
 
   uses-material-design: true
+
+  assets:
+    - assets/
+    - assets/images/
 
   

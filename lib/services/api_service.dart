@@ -51,11 +51,9 @@ class ApiService {
     print(response.body);
 
     if (response.statusCode == 200) {
-
       var data = jsonDecode(response.body);
 
       DbService.setLoginId(data['login_id']);
-
 
       return data['role'];
     } else {
@@ -63,53 +61,44 @@ class ApiService {
     }
   }
 
-
   //profile
-   Future<Map<String, dynamic>> fetchProfile() async {
-    final response = await http.get(Uri.parse('$baseUrl/api/profile/user/${DbService.getLoginId()}'));
-    
+  Future<Map<String, dynamic>> fetchProfile() async {
+    final response = await http
+        .get(Uri.parse('$baseUrl/api/profile/user/${DbService.getLoginId()}'));
 
     print(Uri.parse('$baseUrl/api/profile/user/${DbService.getLoginId()}'));
     if (response.statusCode == 200) {
-
-
-
-
       return jsonDecode(response.body)['data'][0];
     } else {
       throw Exception('Failed to load profile');
     }
   }
 
+  Future<void> addComplaint(
+      String loginId, String complaint, BuildContext context) async {
+    final url = Uri.parse('$baseUrl/api/user/add-complaint/$loginId');
+    final response = await http.post(
+      url,
+      headers: <String, String>{
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: {
+        'complaint': complaint,
+      },
+    );
 
-  Future<void> addComplaint(String loginId, String complaint,BuildContext context) async {
-  final url = Uri.parse('$baseUrl/api/user/add-complaint/$loginId');
-  final response = await http.post(
-    url,
-    headers: <String, String>{
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: {
-      'complaint': complaint,
-    },
-  );
+    print(response.body);
 
-  print(response.body);
-
-  if (response.statusCode == 200) {
-
-    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(jsonDecode(response.body)['Message'])));
-
-    
-    
-  } else {
-
-    throw Exception(jsonDecode(response.body)['Message']);
+    if (response.statusCode == 200) {
+      ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text(jsonDecode(response.body)['Message'])));
+    } else {
+      throw Exception(jsonDecode(response.body)['Message']);
+    }
   }
-}
 
 //view complaint
-Future<List<dynamic>> fetchComplaints() async {
+  Future<List<dynamic>> fetchComplaints() async {
     final loginId = DbService.getLoginId();
     final url = Uri.parse('$baseUrl/api/user/view-complaint/$loginId');
     final response = await http.get(url);
@@ -117,7 +106,6 @@ Future<List<dynamic>> fetchComplaints() async {
     print(response.body);
 
     if (response.statusCode == 201) {
-
       final List<dynamic> data = jsonDecode(response.body)['data'];
       return data;
     } else {
@@ -126,154 +114,177 @@ Future<List<dynamic>> fetchComplaints() async {
   }
 
   //add book event
-  Future<void> bookEvent(BuildContext context, String loginId, String eventId, String date, String location) async {
-  final url = Uri.parse('$baseUrl/api/user/book-event/$loginId/$eventId');
-  try {
-    final response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: {
-        'date': date,
-        'location': location,
-      },
-    );
-
-    if (response.statusCode == 201) {
-      print('Event booked successfully');
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Event booked successfully')),
+  Future<void> bookEvent(BuildContext context, String loginId, String eventId,
+      String date, String location) async {
+    final url = Uri.parse('$baseUrl/api/user/book-event/$loginId/$eventId');
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {
+          'date': date,
+          'location': location,
+        },
       );
-    } else {
-      print('Failed to book event: ${response.statusCode}');
+
+      if (response.statusCode == 201) {
+        print('Event booked successfully');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Event booked successfully')),
+        );
+      } else {
+        print('Failed to book event: ${response.statusCode}');
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Failed to book event: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      print('Error: $e');
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to book event: ${response.statusCode}')),
+        SnackBar(content: Text('Error: $e')),
       );
     }
-  } catch (e) {
-    print('Error: $e');
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: $e')),
-    );
   }
-}
 
+  Future<List<dynamic>> viewCart(String loginId) async {
+    final url = Uri.parse('$baseUrl/api/user/view-cart/$loginId');
+    final response = await http.get(url);
 
-Future<List<dynamic>> viewCart(String loginId) async {
-  final url = Uri.parse('$baseUrl/api/user/view-cart/$loginId');
-  final response = await http.get(url);
-
-  print(response.body);
-
-  if (response.statusCode == 200) {
-    return jsonDecode(response.body)['data'];
-  } else {
-    throw Exception('Failed to load cart data');
-  }
-}
-
-
-Future<void> addAddress(
-  String loginId,
-  Map<String,dynamic> data,
-  BuildContext context
-) async {
-  final url = Uri.parse('$baseUrl/api/user/add-address/$loginId');
-  try {
-    final response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: data,
-    );
-
-    if (response.statusCode == 201) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Address added!!!!!!!')));
-   Navigator.pop(context,data);
-   
-    } else {
-              ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Faild!!!')));
-              
-
-    }
-  } catch (e) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text('Faild!!!!!!!')));
-  }
-}
-
-
-
-Future<void> addCartItem(String loginId, String productId, String price) async {
-  final url = Uri.parse('$baseUrl/api/user/add-cart/$loginId/$productId');
-  try {
-    final response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
-      body: {
-        'price': price,
-      },
-    );
+    print(response.body);
 
     if (response.statusCode == 200) {
-      print('Item added to cart successfully');
+      return jsonDecode(response.body)['data'];
     } else {
-      print('Failed to add item to cart: ${response.statusCode}');
+      throw Exception('Failed to load cart data');
     }
-  } catch (e) {
-    print('Error: $e');
   }
-}
 
+  Future<void> addAddress(
+      String loginId, Map<String, dynamic> data, BuildContext context) async {
+    final url = Uri.parse('$baseUrl/api/user/add-address/$loginId');
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: data,
+      );
 
-Future<void> placeOrder(BuildContext context) async {
-  final url = Uri.parse('$baseUrl/api/user/place-order-prod/${DbService.getLoginId()}');
-  try {
-    final response = await http.post(
-      url,
-      headers: <String, String>{
-        'Content-Type': 'application/x-www-form-urlencoded',
-      },
+      if (response.statusCode == 201) {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Address added!!!!!!!')));
+        Navigator.pop(context, data);
+      } else {
+        ScaffoldMessenger.of(context)
+            .showSnackBar(SnackBar(content: Text('Faild!!!')));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context)
+          .showSnackBar(SnackBar(content: Text('Faild!!!!!!!')));
+    }
+  }
+
+  Future<void> addCartItem(
+      String loginId, String productId, String price) async {
+    final url = Uri.parse('$baseUrl/api/user/add-cart/$loginId/$productId');
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+        body: {
+          'price': price,
+        },
+      );
+
+      if (response.statusCode == 200) {
+        print('Item added to cart successfully');
+      } else {
+        print('Failed to add item to cart: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> placeOrder(BuildContext context) async {
+    final url = Uri.parse(
+        '$baseUrl/api/user/place-order-prod/${DbService.getLoginId()}');
+    try {
+      final response = await http.post(
+        url,
+        headers: <String, String>{
+          'Content-Type': 'application/x-www-form-urlencoded',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Order placed successfully')),
+        );
+
+        Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => UserBookingConfirmScreen(),
+            ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(
+              content: Text('Failed to place order: ${response.statusCode}')),
+        );
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(content: Text('Error: $e')),
+      );
+    }
+  }
+
+//user update
+
+  Future<void> updateUserProfile(
+      {required BuildContext context,
+      required String loginId,
+      required String name,
+      required String phone,
+      required String email}) async {
+
+    final url = Uri.parse('$baseUrl/api/user/update-user-profile/$loginId');
     
-    );
+    final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
+    final body = {
+      'name': name,
+      'phone': phone,
+      'email': email,
+    };
 
-    if (response.statusCode == 200) {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Order placed successfully')),
-
-
-      );
-
-      Navigator.push(context, MaterialPageRoute(builder: (context) => UserBookingConfirmScreen(),));
-    } else {
-      ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to place order: ${response.statusCode}')),
-      );
+    try {
+      final response = await http.put(url, headers: headers, body: body);
+      if (response.statusCode == 200) {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content: Text('User profile updated successfully'),
+          backgroundColor: Colors.green,
+        ));
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+          content:
+              Text('Failed to update user profile: ${response.statusCode}'),
+          backgroundColor: Colors.red,
+        ));
+      }
+    } catch (e) {
+      ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        content: Text('Error updating user profile: $e'),
+        backgroundColor: Colors.red,
+      ));
     }
-  } catch (e) {
-    ScaffoldMessenger.of(context).showSnackBar(
-      SnackBar(content: Text('Error: $e')),
-    );
   }
-}
-
-
-
-
-
-
-  
-
-
-
-
-
-
-
-
 }//close
 
 

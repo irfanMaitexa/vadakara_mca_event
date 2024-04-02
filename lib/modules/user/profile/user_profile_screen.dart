@@ -50,7 +50,11 @@ Center(
                   Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => UserEditProfileScreen(),
+                    builder: (context) => UserEditProfileScreen(
+                      name: _nameController.text,
+                      email: _emailController.text,
+                      phone: _phoneControllers.text,
+                    ),
                   ),
                 );
 
@@ -129,7 +133,8 @@ Center(
                   color: KButtonColor,
                   onPressed: () {
           
-                    Navigator.push(context, MaterialPageRoute(builder:(context) => UserAddComplaintScreen(),));
+                    Navigator.push(context, MaterialPageRoute(builder:(context) => UserAddComplaintScreen(
+                    ),));
                   },
                             ),
                 ),

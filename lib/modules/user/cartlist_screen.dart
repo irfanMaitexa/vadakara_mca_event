@@ -48,14 +48,14 @@ class _UserCartListScreenState extends State<UserCartListScreen> {
       ),
       bottomSheet: Container(
         color: Colors.white,
-        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Text(
+                const Text(
                   'Total:',
                   style: TextStyle(
                       color: Colors.black,
@@ -64,14 +64,14 @@ class _UserCartListScreenState extends State<UserCartListScreen> {
                 ),
                 Text(
                   '₹$total',
-                  style: TextStyle(
+                  style: const TextStyle(
                       color: Colors.black,
                       fontSize: 18,
                       fontWeight: FontWeight.w700),
                 )
               ],
             ),
-            SizedBox(
+            const SizedBox(
               height: 20,
             ),
             SizedBox(
@@ -91,7 +91,7 @@ class _UserCartListScreenState extends State<UserCartListScreen> {
         future: ApiService().viewCart(DbService.getLoginId()),
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CircularProgressIndicator());
+            return const Center(child: CircularProgressIndicator());
           } else if (snapshot.hasError) {
             return Center(child: Text('Error: ${snapshot.error}'));
           } else {

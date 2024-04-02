@@ -1,7 +1,7 @@
 import 'package:event/Db/db_service.dart';
 import 'package:event/modules/auth/login_screen.dart';
 import 'package:event/modules/staff/staff_root_screen.dart';
-import 'package:event/modules/user/user_root_screen.dart';
+
 import 'package:flutter/material.dart';
 
 void main() async{
@@ -26,7 +26,7 @@ class MyApp extends StatelessWidget {
         useMaterial3: true,
         scaffoldBackgroundColor:  Colors.white
       ),
-      home: LoginScreen(),
+      home: StaffRootScreen(),
     );
   }
 
