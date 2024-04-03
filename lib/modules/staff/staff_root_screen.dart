@@ -1,8 +1,11 @@
 import 'package:action_slider/action_slider.dart';
 import 'package:event/Db/db_service.dart';
 import 'package:event/modules/auth/login_screen.dart';
+import 'package:event/modules/staff/booking_list_screen.dart';
 import 'package:event/modules/staff/staff_add_event_screen.dart';
 import 'package:event/modules/staff/staff_add_product_screen.dart';
+import 'package:event/modules/staff/staff_eventList_screen.dart';
+import 'package:event/modules/staff/staff_product_list.dart';
 import 'package:event/services/api_service.dart';
 import 'package:event/utils/constants.dart';
 import 'package:flutter/material.dart';
@@ -78,7 +81,7 @@ void getProfile() async {
                   GestureDetector(
                       onTap: () {
 
-                        Navigator.push(context, MaterialPageRoute(builder: (context) => StaffAddProductScreen(),));
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => const StaffAddProductScreen(),));
                         
                         // Add your navigation logic here
 
@@ -92,9 +95,9 @@ void getProfile() async {
                           footer: Container(
                             color:  KButtonColor,
                             padding: const EdgeInsets.all(12),
-                            child: Text(
+                            child: const Text(
                               'Add product', // Name of the item
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.white),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -109,7 +112,7 @@ void getProfile() async {
                   
                    GestureDetector(
                       onTap: () {
-                                               Navigator.push(context, MaterialPageRoute(builder: (context) => StaffAddEventScreen(),));
+                                               Navigator.push(context, MaterialPageRoute(builder: (context) => const StaffAddEventScreen(),));
 
                       },
                       child: Container(
@@ -121,9 +124,9 @@ void getProfile() async {
                           footer: Container(
                             color:  KButtonColor,
                             padding: const EdgeInsets.all(12),
-                            child: Text(
+                            child: const Text(
                               'Add Event', // Name of the item
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.white),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -139,8 +142,8 @@ void getProfile() async {
                   
                     GestureDetector(
                       onTap: () {
-                        print('Item  clicked');
-                        // Add your navigation logic here
+                                               Navigator.push(context, MaterialPageRoute(builder: (context) => StaffProductList(),));
+
                       },
                       child: Container(
                         clipBehavior: Clip.antiAlias,
@@ -151,9 +154,9 @@ void getProfile() async {
                           footer: Container(
                             color:  KButtonColor,
                             padding: const EdgeInsets.all(12),
-                            child: Text(
+                            child: const Text(
                               'View product', // Name of the item
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.white),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -166,8 +169,9 @@ void getProfile() async {
                     ),
                    GestureDetector(
                       onTap: () {
-                        print('Item  clicked');
+                      
                         // Add your navigation logic here
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => StaffEventList(),));
                       },
                       child: Container(
                         clipBehavior: Clip.antiAlias,
@@ -178,9 +182,9 @@ void getProfile() async {
                           footer: Container(
                             color:  KButtonColor,
                             padding: const EdgeInsets.all(12),
-                            child: Text(
+                            child: const Text(
                               'View events', // Name of the item
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.white),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -206,22 +210,22 @@ void getProfile() async {
                           footer: Container(
                             color:  KButtonColor,
                             padding: const EdgeInsets.all(12),
-                            child: Text(
+                            child: const Text(
                               'Logout', // Name of the item
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.white),
                               textAlign: TextAlign.center,
                             ),
                           ),
                           child: Container(
                             color: Colors.white,
-                            child: Icon(Icons.logout,color: Colors.red,size: 50,)),
+                            child: const Icon(Icons.logout,color: Colors.red,size: 50,)),
                         ),
                       ),
                     ),
 
                     GestureDetector(
                       onTap: () {
-                                               Navigator.push(context, MaterialPageRoute(builder: (context) => StaffAddEventScreen(),));
+                          Navigator.push(context, MaterialPageRoute(builder: (context) => const StaffBookingListScreen(),));
 
                       },
                       child: Container(
@@ -233,9 +237,9 @@ void getProfile() async {
                           footer: Container(
                             color:  KButtonColor,
                             padding: const EdgeInsets.all(12),
-                            child: Text(
+                            child: const Text(
                               'View bookings', // Name of the item
-                              style: const TextStyle(color: Colors.white),
+                              style: TextStyle(color: Colors.white),
                               textAlign: TextAlign.center,
                             ),
                           ),
@@ -253,7 +257,7 @@ void getProfile() async {
                 ),
               ),
               isAttend
-                    ? SizedBox()
+                    ? const SizedBox()
                     : ActionSlider.standard(
                         backgroundColor: KButtonColor,
                         toggleColor: Colors.white,
