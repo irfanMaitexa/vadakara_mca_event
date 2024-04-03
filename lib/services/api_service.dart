@@ -285,6 +285,62 @@ class ApiService {
       ));
     }
   }
+
+
+
+
+
+
+  //get staff profile
+
+  //get profile
+  Future<List<dynamic>> getStaffProfile(String loginId) async {
+    final url = '$baseUrl/api/profile/staff/$loginId';
+    
+
+    try {
+      final response = await http.get(Uri.parse(url));
+
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body)['data'];
+      } else {
+        throw Exception('Somthing went wrong');
+      }
+    } catch (e) {
+      rethrow;
+    }
+  }
+
+
+
+  Future<void> updateBookingStatus({required String id, required String bookedDate,required BuildContext context}) async {
+  var url = Uri.parse('$baseUrl/api/staff/update-booking-stat/$id/$bookedDate');
+  var response = await http.put(
+    url,
+    headers: {
+      'Content-Type': 'application/x-www-form-urlencoded',
+    },
+    body: {
+      // Add any additional form fields here if needed
+    },
+  );
+
+  if (response.statusCode == 200) {
+    // Handle successful response
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Booking status updated successfully'),
+      ),
+    );
+  } else {
+    // Handle error response
+    ScaffoldMessenger.of(context).showSnackBar(
+      const SnackBar(
+        content: Text('Failed to update booking status'),
+      ),
+    );
+  }
+}
 }//close
 
 

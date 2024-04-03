@@ -1,14 +1,57 @@
 import 'package:action_slider/action_slider.dart';
+import 'package:event/Db/db_service.dart';
 import 'package:event/modules/auth/login_screen.dart';
+import 'package:event/modules/staff/staff_add_event_screen.dart';
+import 'package:event/modules/staff/staff_add_product_screen.dart';
+import 'package:event/services/api_service.dart';
 import 'package:event/utils/constants.dart';
 import 'package:flutter/material.dart';
+import 'package:http/http.dart' as http;
 
-class  StaffRootScreen extends StatelessWidget {
+class  StaffRootScreen extends StatefulWidget {
 
 
 
+  const StaffRootScreen({super.key});
+
+  @override
+  State<StaffRootScreen> createState() => _StaffRootScreenState();
+}
+
+class _StaffRootScreenState extends State<StaffRootScreen> {
 bool isAttend = false;
-  
+
+bool loading = false;
+
+void getProfile() async {
+    try {
+
+      setState(() {
+        loading = false;
+      });
+      
+
+      List data = await ApiService().getStaffProfile( DbService.getLoginId()!);
+
+      var today = "${DateTime.now().day}/0${DateTime.now().month}/${DateTime.now().year}";
+
+      data[0]['attendance'].forEach((e) {
+        isAttend = e['date'] == today;
+      });
+
+      setState(() {
+        loading = false;
+      });
+
+     
+    } catch (e) {
+      setState(() {
+        loading = false;
+      });
+      
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -34,8 +77,11 @@ bool isAttend = false;
                  children: [
                   GestureDetector(
                       onTap: () {
-                        print('Item  clicked');
+
+                        Navigator.push(context, MaterialPageRoute(builder: (context) => StaffAddProductScreen(),));
+                        
                         // Add your navigation logic here
+
                       },
                       child: Container(
                         clipBehavior: Clip.antiAlias,
@@ -63,8 +109,8 @@ bool isAttend = false;
                   
                    GestureDetector(
                       onTap: () {
-                        print('Item  clicked');
-                        // Add your navigation logic here
+                                               Navigator.push(context, MaterialPageRoute(builder: (context) => StaffAddEventScreen(),));
+
                       },
                       child: Container(
                         clipBehavior: Clip.antiAlias,
@@ -106,7 +152,7 @@ bool isAttend = false;
                             color:  KButtonColor,
                             padding: const EdgeInsets.all(12),
                             child: Text(
-                              'View booking', // Name of the item
+                              'View product', // Name of the item
                               style: const TextStyle(color: Colors.white),
                               textAlign: TextAlign.center,
                             ),
@@ -172,6 +218,35 @@ bool isAttend = false;
                         ),
                       ),
                     ),
+
+                    GestureDetector(
+                      onTap: () {
+                                               Navigator.push(context, MaterialPageRoute(builder: (context) => StaffAddEventScreen(),));
+
+                      },
+                      child: Container(
+                        clipBehavior: Clip.antiAlias,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(15)
+                        ),
+                        child: GridTile(
+                          footer: Container(
+                            color:  KButtonColor,
+                            padding: const EdgeInsets.all(12),
+                            child: Text(
+                              'View bookings', // Name of the item
+                              style: const TextStyle(color: Colors.white),
+                              textAlign: TextAlign.center,
+                            ),
+                          ),
+                          child: Image.asset(
+                            'assets/images/view.jpeg', // URL of the image
+                            fit: BoxFit.cover,
+                          ),
+                        ),
+                      ),
+                    ),
+                  
                   
               
                  ],
@@ -185,6 +260,41 @@ bool isAttend = false;
                         backgroundBorderRadius: BorderRadius.circular(0.0),
                         rolling: true,
                         action: (controller) async {
+
+
+                          controller.loading();
+                          String url =
+                              '${ApiService.baseUrl}/api/staff/attendance-staff/${DbService.getLoginId()}';
+
+                          // Define the request body parameter
+                          var body = {
+                            'isPresent': 'true',
+                          };
+
+                          // Make the PUT request
+                          var response = await http.put(Uri.parse(url), body: body);
+
+                          // Check if the request was successful
+                          if (response.statusCode == 200) {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Attendance recorded successfully'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                              controller.success();
+                            }
+                          } else {
+                            if (context.mounted) {
+                              ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                  content: Text('Failed to record attendance'),
+                                  duration: Duration(seconds: 2),
+                                ),
+                              );
+                            }
+                          }
                          
                         },
                         child: const Text(
