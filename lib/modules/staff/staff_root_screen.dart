@@ -55,6 +55,12 @@ void getProfile() async {
     }
   }
 
+  
+@override
+  void initState() {
+    getProfile();
+    super.initState();
+  }
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -268,7 +274,7 @@ void getProfile() async {
 
                           controller.loading();
                           String url =
-                              '${ApiService.baseUrl}/api/staff/attendance-staff/${DbService.getLoginId()}';
+                              '${ApiService.baseUrl}/api/staff/attendance/${DbService.getLoginId()}';
 
                           // Define the request body parameter
                           var body = {

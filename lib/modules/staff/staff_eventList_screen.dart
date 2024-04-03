@@ -13,8 +13,12 @@ class StaffEventList extends StatelessWidget {
   const StaffEventList({super.key});
 
   Future<List<dynamic>> _fetchProductPackages() async {
-    final url = Uri.parse('${ApiService.baseUrl}/api/user/view-products');
+    final url = Uri.parse('${ApiService.baseUrl}/api/user/view-events');
     final response = await http.get(url);
+
+    print(url);
+
+    print(response.body);
 
     if (response.statusCode == 201) {
       final List<dynamic> data = jsonDecode(response.body)['data'];
@@ -74,7 +78,7 @@ class StaffEventList extends StatelessWidget {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      snapshot.data![index]['name'],
+                                      snapshot.data![index]['event_type'],
                                       style: TextStyle(
                                         color: Colors.grey.shade400,
                                         fontSize: 15,

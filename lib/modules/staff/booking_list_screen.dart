@@ -26,9 +26,11 @@ class _StaffBookingListScreenState extends State<StaffBookingListScreen> {
 
   Future<List<dynamic>> _fetchFeedback() async {
     final loginId = DbService.getLoginId();
-    print(loginId);
+    
     final url = Uri.parse('${ApiService.baseUrl}/api/user/view-booking/$loginId');
     final response = await http.get(url);
+
+    print(url);
 
 
     print(response.body);

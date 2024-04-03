@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:event/Db/db_service.dart';
+import 'package:event/modules/staff/staff_root_screen.dart';
 import 'package:event/modules/user/bookings/user_booking_confirmation.dart';
 import 'package:event/utils/api_end_points.dart';
 import 'package:flutter/material.dart';
@@ -132,7 +133,7 @@ class ApiService {
       if (response.statusCode == 201) {
         print('Event booked successfully');
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Event booked successfully')),
+          const SnackBar(content: Text('Event booked successfully')),
         );
       } else {
         print('Failed to book event: ${response.statusCode}');
@@ -176,15 +177,15 @@ class ApiService {
 
       if (response.statusCode == 201) {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Address added!!!!!!!')));
+            .showSnackBar(const SnackBar(content: Text('Address added!!!!!!!')));
         Navigator.pop(context, data);
       } else {
         ScaffoldMessenger.of(context)
-            .showSnackBar(SnackBar(content: Text('Faild!!!')));
+            .showSnackBar(const SnackBar(content: Text('Faild!!!')));
       }
     } catch (e) {
       ScaffoldMessenger.of(context)
-          .showSnackBar(SnackBar(content: Text('Faild!!!!!!!')));
+          .showSnackBar(const SnackBar(content: Text('Faild!!!!!!!')));
     }
   }
 
@@ -225,13 +226,13 @@ class ApiService {
 
       if (response.statusCode == 200) {
         ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Order placed successfully')),
+          const SnackBar(content: Text('Order placed successfully')),
         );
 
         Navigator.push(
             context,
             MaterialPageRoute(
-              builder: (context) => UserBookingConfirmScreen(),
+              builder: (context) => const UserBookingConfirmScreen(),
             ));
       } else {
         ScaffoldMessenger.of(context).showSnackBar(
@@ -254,9 +255,8 @@ class ApiService {
       required String name,
       required String phone,
       required String email}) async {
-
     final url = Uri.parse('$baseUrl/api/user/update-user-profile/$loginId');
-    
+
     final headers = {'Content-Type': 'application/x-www-form-urlencoded'};
     final body = {
       'name': name,
@@ -267,7 +267,7 @@ class ApiService {
     try {
       final response = await http.put(url, headers: headers, body: body);
       if (response.statusCode == 200) {
-        ScaffoldMessenger.of(context).showSnackBar(SnackBar(
+        ScaffoldMessenger.of(context).showSnackBar(const SnackBar(
           content: Text('User profile updated successfully'),
           backgroundColor: Colors.green,
         ));
@@ -286,20 +286,16 @@ class ApiService {
     }
   }
 
-
-
-
-
-
   //get staff profile
 
   //get profile
   Future<List<dynamic>> getStaffProfile(String loginId) async {
     final url = '$baseUrl/api/profile/staff/$loginId';
-    
 
     try {
       final response = await http.get(Uri.parse(url));
+
+      print(response.body);
 
       if (response.statusCode == 200) {
         return jsonDecode(response.body)['data'];
@@ -311,17 +307,86 @@ class ApiService {
     }
   }
 
+  Future<void> updateBookingStatus(
+      {required String id,
+      required String bookedDate,
+      required BuildContext context}) async {
+    Uri url = Uri.parse('');
+    var response = await http.put(
+      url,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+      body: {
+        // Add any additional form fields here if needed
+      },
+    );
+
+    if (response.statusCode == 200) {
+      // Handle successful response
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Booking status updated successfully'),
+        ),
+      );
+    } else {
+      // Handle error response
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to update booking status'),
+        ),
+      );
+    }
+  }
+
+//delete
+  Future<void> deleteProduct(
+      {required String productId, required BuildContext context}) async {
+    var url = Uri.parse('$baseUrl/api/staff/delete-product/$productId');
+    var response = await http.get(
+      url,
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded',
+      },
+    );
+
+    print(response.statusCode);
+    print(response.body);
+
+    if (response.statusCode == 200) {
+      // Handle successful response
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Product deleted successfully'),
+        ),
+      );
+
+      Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const StaffRootScreen(),
+          ),
+          (route) => false);
+    } else {
+      // Handle error response
+      ScaffoldMessenger.of(context).showSnackBar(
+        const SnackBar(
+          content: Text('Failed to delete product'),
+        ),
+      );
+    }
+  }
 
 
-  Future<void> updateBookingStatus({required String id, required String bookedDate,required BuildContext context}) async {
-  var url = Uri.parse('$baseUrl/api/staff/update-booking-stat/$id/$bookedDate');
-  var response = await http.put(
+  //delete event
+
+Future<void> deleteEvent(String productId,BuildContext context) async {
+  var url = Uri.parse('$baseUrl/api/staff/delete-event/$productId');
+  var response = await http.get(
     url,
     headers: {
-      'Content-Type': 'application/x-www-form-urlencoded',
-    },
-    body: {
-      // Add any additional form fields here if needed
+      'Content-Type': 'application/json',
+      // Add any other headers if needed
     },
   );
 
@@ -329,18 +394,40 @@ class ApiService {
     // Handle successful response
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Booking status updated successfully'),
+        content: Text('Product deleted successfully'),
       ),
     );
+
+    Navigator.pushAndRemoveUntil(
+          context,
+          MaterialPageRoute(
+            builder: (context) => const StaffRootScreen(),
+          ),
+          (route) => false);
   } else {
     // Handle error response
     ScaffoldMessenger.of(context).showSnackBar(
       const SnackBar(
-        content: Text('Failed to update booking status'),
+        content: Text('Failed to delete product'),
       ),
     );
   }
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 }//close
 
 

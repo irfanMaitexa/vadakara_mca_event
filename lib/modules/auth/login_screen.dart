@@ -1,7 +1,6 @@
 // ignore_for_file: prefer_const_constructors
-
-import 'package:event/modules/auth/staff_registration_screen.dart';
 import 'package:event/modules/auth/user_registrattion_screen.dart';
+import 'package:event/modules/staff/staff_root_screen.dart';
 import 'package:event/modules/user/user_root_screen.dart';
 import 'package:event/services/api_service.dart';
 import 'package:event/utils/constants.dart';
@@ -11,7 +10,7 @@ import 'package:event/widgets/custom_text_field.dart';
 import 'package:flutter/material.dart';
 
 class LoginScreen extends StatefulWidget {
-  LoginScreen({Key? key});
+  const LoginScreen({Key? key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -159,11 +158,19 @@ class _LoginScreenState extends State<LoginScreen> {
           _passwordController.text
         );
 
+       
 
         if(role == 2){
 
 
           Navigator.push(context, MaterialPageRoute(builder: (context) => UserRootScreen(),));
+        }
+
+        if(role == 3){
+
+          Navigator.push(context, MaterialPageRoute(builder: (context) => StaffRootScreen(),));
+
+
         }
 
        

@@ -1,3 +1,5 @@
+import 'package:event/modules/staff/staff_update_product_screen.dart';
+import 'package:event/services/api_service.dart';
 import 'package:event/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -102,7 +104,6 @@ class _StaffProductDetailsScreeenState extends State<StaffProductDetailsScreeen>
                             fontSize: 16,
                           ),
                         ),
-                        const Spacer(),
                         Row(
                           children: [
                             const Text(
@@ -140,6 +141,15 @@ class _StaffProductDetailsScreeenState extends State<StaffProductDetailsScreeen>
                           child: CustomButton(
                             text: 'Upadate',
                             onPressed: () async {
+
+                              Navigator.push(context, MaterialPageRoute(builder: (context) =>  StaffUpdateProductScreen(
+                                name: widget.details['name'],
+                                 color: widget.details['color'], 
+                                 price: widget.details['price'].toString(), 
+                                 description: widget.details['description'],
+                                  productId: widget.details['_id'],
+                                  )
+                              ,));
                               
                                
                               
@@ -151,6 +161,17 @@ class _StaffProductDetailsScreeenState extends State<StaffProductDetailsScreeen>
                           child: CustomButton(
                             text: 'Delete',
                             onPressed: () async {
+
+                            setState(() {
+                              loading =  true;
+
+                            });
+
+                            await ApiService().deleteProduct(productId: widget.details['_id'], context: context);
+
+                            setState(() {
+                              loading = false;
+                            });
                               
                                
                               

@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:event/modules/staff/staff_root_screen.dart';
 import 'package:event/services/api_service.dart';
 import 'package:event/widgets/custom_button.dart';
 import 'package:event/widgets/custom_text_field.dart';
@@ -40,7 +41,6 @@ class _StaffUpdateEventScreenState extends State<StaffUpdateEventScreen> {
   }
 
   final TextEditingController eventTypeController = TextEditingController();
-  final TextEditingController colorController = TextEditingController();
   final TextEditingController priceController = TextEditingController();
   final TextEditingController descriptionController = TextEditingController();
 
@@ -51,7 +51,7 @@ class _StaffUpdateEventScreenState extends State<StaffUpdateEventScreen> {
   @override
   void dispose() {
     eventTypeController.dispose();
-    colorController.dispose();
+   
     priceController.dispose();
     descriptionController.dispose();
     super.dispose();
@@ -60,7 +60,6 @@ class _StaffUpdateEventScreenState extends State<StaffUpdateEventScreen> {
   @override
   void initState() {
     eventTypeController.text = widget.eventType;
-    colorController.text = widget.color;
     priceController.text = widget.price;
     descriptionController.text = widget.description;
     super.initState();
@@ -85,19 +84,21 @@ class _StaffUpdateEventScreenState extends State<StaffUpdateEventScreen> {
               var request = http.MultipartRequest(
                 'PUT',
                 Uri.parse(
-                    '${ApiService.baseUrl}/api/staff/add-event/${widget.productId}'),
+                    '${ApiService.baseUrl}/api/staff/update-event/${widget.productId}'),
               );
 
               // Add form fields
-              request.fields['name'] = eventTypeController.text;
-              request.fields['color'] = colorController.text;
+              request.fields['event_type'] = eventTypeController.text;
               request.fields['price'] = priceController.text;
               request.fields['description'] = descriptionController.text;
 
               // Add image file
+             if(image != null){
+
               request.files.add(
                 await http.MultipartFile.fromPath('image', image!.path),
               );
+             }
 
               // Send the request
               var response = await request.send();
@@ -107,15 +108,20 @@ class _StaffUpdateEventScreenState extends State<StaffUpdateEventScreen> {
                 print('Product added successfully');
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Product added successfully'),
+                    content: Text('Event updated successfully'),
                   ),
+
+
                 );
+
+                Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => StaffRootScreen(),), (route) => false);
+
               } else {
                 // Handle error response
-                print('Failed to add product');
+                
                 ScaffoldMessenger.of(context).showSnackBar(
                   const SnackBar(
-                    content: Text('Failed to add product'),
+                    content: Text('Failed to update'),
                   ),
                 );
               }
@@ -133,7 +139,7 @@ class _StaffUpdateEventScreenState extends State<StaffUpdateEventScreen> {
           },
         ),
       ),
-      body: Form(
+      body:loading ? Center(child: CircularProgressIndicator(),)  : Form(
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
@@ -244,14 +250,7 @@ class _StaffUpdateEventScreenState extends State<StaffUpdateEventScreen> {
                 controller: descriptionController,
                 borderColor: Colors.grey,
               ),
-              SizedBox(
-                height: 20,
-              ),
-              CustomTextField(
-                hintText: 'Enter color',
-                controller: colorController,
-                borderColor: Colors.grey,
-              ),
+             
               SizedBox(
                 height: 20,
               ),
@@ -269,7 +268,6 @@ class _StaffUpdateEventScreenState extends State<StaffUpdateEventScreen> {
 
   bool areControllersEmpty() {
     return eventTypeController.text.isEmpty &&
-        colorController.text.isEmpty &&
         priceController.text.isEmpty &&
         descriptionController.text.isEmpty;
   }

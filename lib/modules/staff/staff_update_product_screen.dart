@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:event/modules/staff/staff_root_screen.dart';
 import 'package:event/services/api_service.dart';
 import 'package:event/widgets/custom_button.dart';
 import 'package:event/widgets/custom_text_field.dart';
@@ -95,6 +96,8 @@ class _StaffUpdateProductScreenState extends State<StaffUpdateProductScreen> {
     request.fields['price'] = priceController.text;
     request.fields['description'] = descriptionController.text;
 
+    
+
     // Add image file
     request.files.add(
       await http.MultipartFile.fromPath('image', image!.path),
@@ -111,6 +114,7 @@ class _StaffUpdateProductScreenState extends State<StaffUpdateProductScreen> {
           content: Text('Product updated successfully'),
         ),
       );
+      Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => StaffRootScreen(),), (route) => false);
     } else {
       // Handle error response
       print('Failed to add product');
@@ -135,7 +139,7 @@ class _StaffUpdateProductScreenState extends State<StaffUpdateProductScreen> {
           },
         ),
       ),
-      body: Form(
+      body: loading ? Center(child: CircularProgressIndicator(),)  : Form(
         key: _formKey,
         child: Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),

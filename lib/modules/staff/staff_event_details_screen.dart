@@ -1,3 +1,5 @@
+import 'package:event/modules/staff/staff_update_event_screen.dart';
+import 'package:event/services/api_service.dart';
 import 'package:event/widgets/custom_button.dart';
 import 'package:flutter/material.dart';
 
@@ -60,7 +62,7 @@ class _StaffEventDetailsScreeenState extends State<StaffEventDetailsScreeen> {
                           height: 10,
                         ),
                         Text(
-                          widget.details['name'],
+                          widget.details['event_type'],
                           maxLines: 8,
                           style: TextStyle(color: Colors.grey.shade400),
                         ),
@@ -85,24 +87,6 @@ class _StaffEventDetailsScreeenState extends State<StaffEventDetailsScreeen> {
                         const SizedBox(
                           height: 20,
                         ),
-                        const Text(
-                          'Color',
-                          style: TextStyle(
-                            color: Colors.black,
-                            fontSize: 15,
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 5,
-                        ),
-                        Text(
-                          widget.details['color'],
-                          style: TextStyle(
-                            color: Colors.grey.shade400,
-                            fontSize: 16,
-                          ),
-                        ),
-                        const Spacer(),
                         Row(
                           children: [
                             const Text(
@@ -138,28 +122,45 @@ class _StaffEventDetailsScreeenState extends State<StaffEventDetailsScreeen> {
                       children: [
                         Expanded(
                           child: CustomButton(
-                            text: 'Upadate',
+                            text: 'Update',
                             onPressed: () async {
-                              
-                               
-                              
+                              Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) =>
+                                        StaffUpdateEventScreen(
+                                            eventType:
+                                                widget.details['event_type'],
+                                            color: 'red',
+                                            price: widget.details['price']
+                                                .toString(),
+                                            description:
+                                                widget.details['description'],
+                                            productId: widget.details['_id']),
+                                  ));
                             },
                           ),
                         ),
-                        SizedBox(width: 20,),
-                         Expanded(
+                        SizedBox(
+                          width: 20,
+                        ),
+                        Expanded(
                           child: CustomButton(
                             text: 'Delete',
                             onPressed: () async {
-                              
-                               
-                              
+                              setState(() {
+                                loading = true;
+                              });
+
+                              ApiService()
+                                  .deleteEvent(widget.details['_id'], context);
+
+                              setState(() {
+                                loading = true;
+                              });
                             },
                           ),
                         ),
-                        
-
-                        
                       ],
                     ),
                   )

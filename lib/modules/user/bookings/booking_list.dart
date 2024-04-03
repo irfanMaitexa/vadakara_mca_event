@@ -27,13 +27,10 @@ class _BookingListScreenState extends State<BookingListScreen> {
   Future<List<dynamic>> _fetchFeedback() async {
     final loginId = DbService.getLoginId();
     final url = Uri.parse('${ApiService.baseUrl}/api/user/view-booking/$loginId');
+
+    print(url);
     final response = await http.get(url);
-
-
-    print(response.body);
-
-    
-
+ 
     if (response.statusCode == 200) {
       final List<dynamic> data = jsonDecode(response.body)['Data'];
       
@@ -93,10 +90,21 @@ class _BookingListScreenState extends State<BookingListScreen> {
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    subtitle: Text(feedback['date']),
+                    subtitle: Text(feedback['status']),
                     trailing: CustomButton(
-                      text: feedback['status'],
-                      onPressed: () {},
+                      text:  'Accept',
+                      onPressed: () async{
+                      await    ApiService().updateBookingStatus(
+                          id: feedback['_id'], bookedDate:feedback['date'] , context: context);
+
+
+                      setState(() {
+                        
+                      });
+
+
+
+                      },
                     ),
                   ),
                 );
